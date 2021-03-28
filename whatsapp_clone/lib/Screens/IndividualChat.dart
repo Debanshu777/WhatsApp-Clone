@@ -52,7 +52,7 @@ class _IndividualChatState extends State<IndividualChat> {
                   height: 36,
                   width: 36,
                 ),
-                backgroundColor: Colors.blueGrey,
+                backgroundColor: Colors.blueGrey[200],
               )
             ],
           ),

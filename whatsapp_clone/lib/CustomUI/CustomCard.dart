@@ -26,7 +26,7 @@ class CustomCard extends StatelessWidget {
                 height: 37,
                 width: 37,
               ),
-              backgroundColor: Colors.blueGrey,
+              backgroundColor: Colors.blueGrey[200],
             ),
             title: Text(
               chatModel.name,
