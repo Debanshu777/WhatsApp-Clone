@@ -7,30 +7,51 @@ class CustomContactCard extends StatelessWidget {
   final ChatModel contact;
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      child: ListTile(
-        leading: CircleAvatar(
-          radius: 23,
-          child: SvgPicture.asset(
-            "assets/person.svg",
-            color: Colors.white,
-            height: 30,
-            width: 30,
-          ),
-          backgroundColor: Colors.blueGrey[200],
+    return ListTile(
+      leading: Container(
+        height: 50,
+        width: 50,
+        child: Stack(
+          children: [
+            CircleAvatar(
+              radius: 23,
+              child: SvgPicture.asset(
+                "assets/person.svg",
+                color: Colors.white,
+                height: 30,
+                width: 30,
+              ),
+              backgroundColor: Colors.blueGrey[200],
+            ),
+            contact.select
+                ? Positioned(
+                    bottom: 4,
+                    right: 5,
+                    child: CircleAvatar(
+                      child: Icon(
+                        Icons.check,
+                        color: Colors.white,
+                        size: 18,
+                      ),
+                      radius: 11,
+                      backgroundColor: Colors.teal,
+                    ),
+                  )
+                : Container()
+          ],
         ),
-        title: Text(
-          contact.name,
-          style: TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.bold,
-          ),
+      ),
+      title: Text(
+        contact.name,
+        style: TextStyle(
+          fontSize: 15,
+          fontWeight: FontWeight.bold,
         ),
-        subtitle: Text(
-          contact.status,
-          style: TextStyle(
-            fontSize: 13,
-          ),
+      ),
+      subtitle: Text(
+        contact.status,
+        style: TextStyle(
+          fontSize: 13,
         ),
       ),
     );

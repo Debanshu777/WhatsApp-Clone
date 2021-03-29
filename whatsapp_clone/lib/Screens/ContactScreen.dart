@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:whatsapp_clone/CustomUI/ButtonCard.dart';
 import 'package:whatsapp_clone/CustomUI/CustomContactCard.dart';
 import 'package:whatsapp_clone/Model/ChatModel.dart';
+import 'package:whatsapp_clone/Screens/NewGroupSelectScreen.dart';
 
 class ContactScreen extends StatefulWidget {
   @override
@@ -76,9 +77,17 @@ class _ContactScreenState extends State<ContactScreen> {
         itemCount: contacts.length + 2,
         itemBuilder: (context, index) {
           if (index == 0) {
-            return ButtonCard(
-              icon: Icons.group,
-              name: "New Group",
+            return InkWell(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (builder) => NewGroupSelectScreen()));
+              },
+              child: ButtonCard(
+                icon: Icons.group,
+                name: "New Group",
+              ),
             );
           } else if (index == 1) {
             return ButtonCard(icon: Icons.person_add, name: "New Contact");
