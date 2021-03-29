@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:whatsapp_clone/Pages/CameraPage.dart';
 import 'package:whatsapp_clone/Pages/ChatPage.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -20,7 +21,7 @@ class _HomeScreenState extends State<HomeScreen>
   Widget build(BuildContext context) {
     double orjWidth = MediaQuery.of(context).size.width;
     double cameraWidth = orjWidth / 24;
-    double yourWidth = (orjWidth - cameraWidth) / 5;
+    double yourWidth = (orjWidth - cameraWidth) / 4;
 
     return Scaffold(
       appBar: AppBar(
@@ -46,10 +47,12 @@ class _HomeScreenState extends State<HomeScreen>
           controller: _controller,
           indicatorColor: Colors.white,
           labelPadding: EdgeInsets.symmetric(
-              horizontal: (orjWidth - (cameraWidth + yourWidth * 3)) / 8),
+              horizontal: (orjWidth - (cameraWidth + yourWidth * 3)) / 7),
           tabs: [
             Container(
-              child: Tab(icon: Icon(Icons.camera_alt)),
+              child: Tab(
+                icon: Icon(Icons.camera_alt),
+              ),
               width: cameraWidth,
             ),
             Container(
@@ -74,7 +77,7 @@ class _HomeScreenState extends State<HomeScreen>
         ),
       ),
       body: TabBarView(controller: _controller, children: [
-        Text("Camera"),
+        CameraPage(),
         ChatPage(),
         Text("Status"),
         Text("Call"),
