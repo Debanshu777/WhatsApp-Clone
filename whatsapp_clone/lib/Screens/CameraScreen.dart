@@ -1,5 +1,9 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:whatsapp_clone/Screens/CameraPreView.dart';
+// import 'package:whatsapp_clone/Screens/CameraPreView.dart';
 
 List<CameraDescription> cameras;
 
@@ -14,7 +18,8 @@ class _CameraScreenState extends State<CameraScreen> {
   @override
   void initState() {
     super.initState();
-    _cameraController = CameraController(cameras[0], ResolutionPreset.high);
+    _cameraController =
+        CameraController(cameras[0], ResolutionPreset.ultraHigh);
     cameraValue = _cameraController.initialize();
   }
 
@@ -56,6 +61,7 @@ class _CameraScreenState extends State<CameraScreen> {
                         onPressed: () {},
                       ),
                       InkWell(
+                        onTap: () => takePicture(context),
                         child: Container(
                           height: 80.0,
                           width: 80.0,
@@ -93,5 +99,17 @@ class _CameraScreenState extends State<CameraScreen> {
         ],
       ),
     );
+  }
+
+  void takePicture(BuildContext context) async {
+    final path =
+        join((await getTemporaryDirectory()).path, "${DateTime.now()}.png");
+    await _cameraController.takePicture(path);
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (builder) => CameraPreView(
+                  path: path,
+                )));
   }
 }
