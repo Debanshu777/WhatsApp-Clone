@@ -2,6 +2,9 @@
     package="com.debanshu777.whatsapp_clone">
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-feature android:name="android.hardware.camera" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+
+
    <application
         android:label="whatsapp_clone"
         android:icon="@mipmap/ic_launcher">
