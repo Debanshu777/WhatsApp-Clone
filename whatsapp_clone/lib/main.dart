@@ -2,6 +2,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:whatsapp_clone/Screens/CameraScreen.dart';
 import 'Screens/HomeScreen.dart';
+import 'Screens/LoginScreen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,7 +19,7 @@ class MyApp extends StatelessWidget {
           fontFamily: 'Lato',
           primaryColor: Color(0xFF075E54),
           accentColor: Color(0xFF128C7E)),
-      home: HomeScreen(),
+      home: LoginScreen(),
     );
   }
 }

@@ -18,6 +18,8 @@ class _IndividualChatState extends State<IndividualChat> {
   FocusNode focusNode = FocusNode();
   TextEditingController _controller = TextEditingController();
   IO.Socket socket;
+  bool sendButton = false;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -186,6 +188,17 @@ class _IndividualChatState extends State<IndividualChat> {
                                   keyboardType: TextInputType.multiline,
                                   maxLines: 5,
                                   minLines: 1,
+                                  onChanged: (value) {
+                                    if (value.length > 0) {
+                                      setState(() {
+                                        sendButton = true;
+                                      });
+                                    } else {
+                                      setState(() {
+                                        sendButton = false;
+                                      });
+                                    }
+                                  },
                                   decoration: InputDecoration(
                                       border: InputBorder.none,
                                       hintText: "Type a message",
@@ -229,10 +242,15 @@ class _IndividualChatState extends State<IndividualChat> {
                               child: CircleAvatar(
                                 radius: 25,
                                 child: IconButton(
-                                  icon: Icon(
-                                    Icons.mic,
-                                    color: Colors.white,
-                                  ),
+                                  icon: sendButton
+                                      ? Icon(
+                                          Icons.send,
+                                          color: Colors.white,
+                                        )
+                                      : Icon(
+                                          Icons.mic,
+                                          color: Colors.white,
+                                        ),
                                   onPressed: () {},
                                 ),
                                 backgroundColor: Color(0xFF128C7E),
