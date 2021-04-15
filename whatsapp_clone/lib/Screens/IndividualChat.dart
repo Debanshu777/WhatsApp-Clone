@@ -22,6 +22,7 @@ class _IndividualChatState extends State<IndividualChat> {
   TextEditingController _controller = TextEditingController();
   IO.Socket socket;
   bool sendButton = false;
+  ScrollController _scrollController = ScrollController();
   List<MessageModel> messages = [];
 
   @override
@@ -49,6 +50,8 @@ class _IndividualChatState extends State<IndividualChat> {
       socket.on("message", (msg) {
         print(msg);
         setMessage("destination", msg["message"]);
+        _scrollController.animateTo(_scrollController.position.maxScrollExtent,
+            duration: Duration(milliseconds: 300), curve: Curves.easeInOut);
       });
     });
     print(socket.connected);
@@ -65,7 +68,10 @@ class _IndividualChatState extends State<IndividualChat> {
   }
 
   void setMessage(String type, String message) {
-    MessageModel messageModel = MessageModel(type: type, message: message);
+    MessageModel messageModel = MessageModel(
+        type: type,
+        message: message,
+        time: DateTime.now().toString().substring(10, 16));
     setState(() {
       messages.add(messageModel);
     });
@@ -163,21 +169,28 @@ class _IndividualChatState extends State<IndividualChat> {
             height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,
             child: WillPopScope(
-              child: Stack(
+              child: Column(
                 children: [
-                  Container(
-                    height: MediaQuery.of(context).size.height - 140,
+                  Expanded(
                     child: ListView.builder(
                       shrinkWrap: true,
-                      itemCount: messages.length,
+                      controller: _scrollController,
+                      itemCount: messages.length + 1,
                       itemBuilder: (context, index) {
+                        if (index == messages.length) {
+                          return Container(
+                            height: 70,
+                          );
+                        }
                         if (messages[index].type == "source") {
                           return OwnMessageCard(
                             message: messages[index].message,
+                            time: messages[index].time,
                           );
                         } else {
                           return ReplyMessageCard(
                             message: messages[index].message,
+                            time: messages[index].time,
                           );
                         }
                       },
@@ -185,105 +198,117 @@ class _IndividualChatState extends State<IndividualChat> {
                   ),
                   Align(
                     alignment: Alignment.bottomCenter,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Row(
-                          children: [
-                            Container(
-                              width: MediaQuery.of(context).size.width - 60,
-                              child: Card(
-                                margin: EdgeInsets.only(
-                                    left: 2, right: 2, bottom: 8),
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(25)),
-                                child: TextFormField(
-                                  controller: _controller,
-                                  focusNode: focusNode,
-                                  textAlignVertical: TextAlignVertical.center,
-                                  keyboardType: TextInputType.multiline,
-                                  maxLines: 5,
-                                  minLines: 1,
-                                  onChanged: (value) {
-                                    if (value.length > 0) {
-                                      setState(() {
-                                        sendButton = true;
-                                      });
-                                    } else {
-                                      setState(() {
-                                        sendButton = false;
-                                      });
-                                    }
-                                  },
-                                  decoration: InputDecoration(
-                                      border: InputBorder.none,
-                                      hintText: "Type a message",
-                                      prefixIcon: IconButton(
-                                        icon: Icon(Icons.emoji_emotions),
-                                        onPressed: () {
-                                          focusNode.unfocus();
-                                          focusNode.canRequestFocus = false;
-                                          setState(() {
-                                            show = !show;
-                                          });
-                                        },
-                                      ),
-                                      suffixIcon: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          IconButton(
-                                            icon: Icon(Icons.attach_file),
-                                            onPressed: () {
-                                              showModalBottomSheet(
-                                                  backgroundColor:
-                                                      Colors.transparent,
-                                                  context: context,
-                                                  builder: (builder) =>
-                                                      bottomSheet());
-                                            },
-                                          ),
-                                          IconButton(
-                                            icon: Icon(Icons.camera_alt),
-                                            onPressed: () {},
-                                          ),
-                                        ],
-                                      ),
-                                      contentPadding: EdgeInsets.all(5)),
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding:
-                                  EdgeInsets.only(bottom: 8, right: 5, left: 2),
-                              child: CircleAvatar(
-                                radius: 25,
-                                child: IconButton(
-                                  icon: sendButton
-                                      ? Icon(
-                                          Icons.send,
-                                          color: Colors.white,
-                                        )
-                                      : Icon(
-                                          Icons.mic,
-                                          color: Colors.white,
+                    child: Container(
+                      height: 70,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Row(
+                            children: [
+                              Container(
+                                width: MediaQuery.of(context).size.width - 60,
+                                child: Card(
+                                  margin: EdgeInsets.only(
+                                      left: 2, right: 2, bottom: 8),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(25)),
+                                  child: TextFormField(
+                                    controller: _controller,
+                                    focusNode: focusNode,
+                                    textAlignVertical: TextAlignVertical.center,
+                                    keyboardType: TextInputType.multiline,
+                                    maxLines: 5,
+                                    minLines: 1,
+                                    onChanged: (value) {
+                                      if (value.length > 0) {
+                                        setState(() {
+                                          sendButton = true;
+                                        });
+                                      } else {
+                                        setState(() {
+                                          sendButton = false;
+                                        });
+                                      }
+                                    },
+                                    decoration: InputDecoration(
+                                        border: InputBorder.none,
+                                        hintText: "Type a message",
+                                        prefixIcon: IconButton(
+                                          icon: Icon(Icons.emoji_emotions),
+                                          onPressed: () {
+                                            focusNode.unfocus();
+                                            focusNode.canRequestFocus = false;
+                                            setState(() {
+                                              show = !show;
+                                            });
+                                          },
                                         ),
-                                  onPressed: () {
-                                    if (sendButton) {
-                                      sendMessage(
-                                          _controller.text,
-                                          widget.sourceModel.id,
-                                          widget.chatModel.id);
-                                      _controller.clear();
-                                    }
-                                  },
+                                        suffixIcon: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            IconButton(
+                                              icon: Icon(Icons.attach_file),
+                                              onPressed: () {
+                                                showModalBottomSheet(
+                                                    backgroundColor:
+                                                        Colors.transparent,
+                                                    context: context,
+                                                    builder: (builder) =>
+                                                        bottomSheet());
+                                              },
+                                            ),
+                                            IconButton(
+                                              icon: Icon(Icons.camera_alt),
+                                              onPressed: () {},
+                                            ),
+                                          ],
+                                        ),
+                                        contentPadding: EdgeInsets.all(5)),
+                                  ),
                                 ),
-                                backgroundColor: Color(0xFF128C7E),
                               ),
-                            ),
-                          ],
-                        ),
-                        show ? emojiSelect() : Container(),
-                      ],
+                              Padding(
+                                padding: EdgeInsets.only(
+                                    bottom: 8, right: 5, left: 2),
+                                child: CircleAvatar(
+                                  radius: 25,
+                                  child: IconButton(
+                                    icon: sendButton
+                                        ? Icon(
+                                            Icons.send,
+                                            color: Colors.white,
+                                          )
+                                        : Icon(
+                                            Icons.mic,
+                                            color: Colors.white,
+                                          ),
+                                    onPressed: () {
+                                      if (sendButton) {
+                                        _scrollController.animateTo(
+                                            _scrollController
+                                                .position.maxScrollExtent,
+                                            duration:
+                                                Duration(milliseconds: 300),
+                                            curve: Curves.easeInOut);
+                                        sendMessage(
+                                            _controller.text,
+                                            widget.sourceModel.id,
+                                            widget.chatModel.id);
+                                        _controller.clear();
+                                        setState(() {
+                                          sendButton = false;
+                                        });
+                                      }
+                                    },
+                                  ),
+                                  backgroundColor: Color(0xFF128C7E),
+                                ),
+                              ),
+                            ],
+                          ),
+                          show ? emojiSelect() : Container(),
+                        ],
+                      ),
                     ),
                   )
                 ],
