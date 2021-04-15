@@ -9,13 +9,19 @@ var io=require("socket.io")(server);
 
 //middleware
 app.use(express.json());
+var clients={};
 
 
 //Connection on socket.io
 io.on("connection",(socket)=>{
     console.log("connected");
     console.log(socket.id,"has joined");
-    socket.on("/test",(msg)=>{
+    socket.on("signIn",(id)=>{
+        console.log(id);
+        clients[id]=socket;
+        console.log(clients);
+    })
+    socket.on("message",(msg)=>{
         console.log(msg);
     })
 })

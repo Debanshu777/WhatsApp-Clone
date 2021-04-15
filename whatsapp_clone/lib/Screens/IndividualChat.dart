@@ -7,8 +7,10 @@ import 'package:whatsapp_clone/Model/ChatModel.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class IndividualChat extends StatefulWidget {
-  const IndividualChat({Key key, this.chatModel}) : super(key: key);
+  const IndividualChat({Key key, this.chatModel, this.sourceModel})
+      : super(key: key);
   final ChatModel chatModel;
+  final ChatModel sourceModel;
   @override
   _IndividualChatState createState() => _IndividualChatState();
 }
@@ -42,7 +44,15 @@ class _IndividualChatState extends State<IndividualChat> {
     socket.connect();
     socket.onConnect((data) => print("Connected"));
     print(socket.connected);
-    socket.emit("/test", "connected");
+    socket.emit("signIn", widget.sourceModel.id);
+  }
+
+  void sendMessage(String message, int sourceID, int targetID) {
+    socket.emit("message", {
+      "message": message,
+      "sourceID": sourceID,
+      "targetID": targetID,
+    });
   }
 
   @override
@@ -251,7 +261,15 @@ class _IndividualChatState extends State<IndividualChat> {
                                           Icons.mic,
                                           color: Colors.white,
                                         ),
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    if (sendButton) {
+                                      sendMessage(
+                                          _controller.text,
+                                          widget.sourceModel.id,
+                                          widget.chatModel.id);
+                                      _controller.clear();
+                                    }
+                                  },
                                 ),
                                 backgroundColor: Color(0xFF128C7E),
                               ),
