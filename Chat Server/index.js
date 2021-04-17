@@ -27,9 +27,11 @@ io.on("connection",(socket)=>{
         if(clients[targetId])
             clients[targetId].emit("message",msg);
     })
-})
-
+});
+app.route("/check").get((req,res)=>{
+    return res.json("App is running");
+});
 //listening server on the port
 server.listen(port,()=>{
     console.log("server started");
-})
+});
